@@ -1,0 +1,33 @@
+{
+    "name": "resmed",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "start": "nodemon ./bin/www",
+      "test": "mocha tests/**/*.js"
+    },
+    "dependencies": {
+      "assert": "^2.0.0",
+      "axios": "^1.4.0",
+      "chai": "^4.3.7",
+      "chai-http": "^4.3.0",
+      "cookie-parser": "~1.4.4",
+      "cors": "^2.8.5",
+      "debug": "~2.6.9",
+      "express": "~4.16.1",
+      "gensync": "^1.0.0-beta.2",
+      "http-errors": "~1.6.3",
+      "jade": "~1.11.0",
+      "mocha": "^10.2.0",
+      "morgan": "~1.9.1",
+      "node-cache": "^5.1.2",
+      "nodemon": "^2.0.22",
+      "pug": "^3.0.2",
+      "save-dev": "^0.0.1-security",
+      "socket.io": "^4.6.2",
+      "supertest": "^6.3.3",
+      "tap": "^16.3.6",
+      "util.promisify": "^1.1.2",
+      "uuid": "^9.0.0"
+    }
+  }
