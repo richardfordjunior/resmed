@@ -1,4 +1,4 @@
-const server = require('../bin/www').server
+const server = require('../bin/server').server
 const chai = require('chai')
 const chaiHttp = require('chai-http')
 chai.should()

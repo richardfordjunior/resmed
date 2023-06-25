@@ -42,7 +42,7 @@ exports.getSensorData = async (req) => {
 
 function getSensorDataStats(arr) {
   if (!arr.length) return
-  let max, min, avg;
+  let max, min;
   let pollutants = arr.map(val => val.pollutants)
   min = Math.min(...pollutants[0].map(item => item.value));
   max = Math.max(...pollutants[0].map(item => item.value));
