@@ -82,4 +82,19 @@ function onListening() {
     : 'port ' + addr.port;
   console.log(`Server listening on port ${port} ${new Date().toISOString()}`);
 }
+
+function makeServer (){
+  const express = require('express');
+  const app = express();
+  app.get('/', function (req, res) {
+    res.status(200).send('ok');
+  });
+  const server = app.listen(3001, function () {
+    const port = server.address().port;
+    console.log(`Server listening on port ${port} ${new Date().toISOString()}`);
+  });
+  return server;
+}
+
 module.exports.server = server;
+module.exports.makeServer  = makeServer

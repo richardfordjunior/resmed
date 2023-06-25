@@ -3,18 +3,31 @@ const chai = require('chai')
 const chaiHttp = require('chai-http')
 chai.should()
 chai.use(chaiHttp)
+const timekeeper = require('timekeeper');
+const time = '2023-06-23T19:15:11.875Z'
 
 describe('API', function () {
   describe('# Sensor Data', function () {
+    beforeEach(() => {
+      timekeeper.freeze(time)
+    })
+    afterEach(() => {
+      timekeeper.reset()
+      server.close()
+    })
+
     it('posts sensor data', async function () {
       const postData = {
-        "id": 1004,
-        "timestamp": "2023-06-25T19:15:11.875Z",
+        "timestamp": new Date().toISOString(),
         "pollutants": [
-          { "name": "groundLevelOzone", "value": 0.5, "timestamp": "2023-06-23T20:21:39.960Z" },
-          { "name": "carbonMonoxide", "value": 50, "timestamp": "2023-06-23T20:22:39.960Z" },
-          { "name": "sulfurDioxide", "value": 1000, "timestamp": "2023-06-23T20:23:39.960Z" },
-          { "name": "nitrogenDioxide", "value": 2049, "timestamp": "2023-06-23T20:24:39.960Z" }
+          { "name": "groundLevelOzone", "value": 0.5, "timestamp": new Date().toISOString() },
+          { "name": "carbonMonoxide", "value": 50, "timestamp": new Date().toISOString() },
+          { "name": "sulfurDioxide", "value": 1000, "timestamp": new Date().toISOString() },
+          { "name": "nitrogenDioxide", "value": 2049, "timestamp": new Date().toISOString() },
+          { "name": "groundLevelOzone", "value": 0.6, "timestamp": new Date().toISOString() },
+          { "name": "carbonMonoxide", "value": 45, "timestamp": new Date().toISOString() },
+          { "name": "sulfurDioxide", "value": 950, "timestamp": new Date().toISOString() },
+          { "name": "nitrogenDioxide", "value": 1234, "timestamp": new Date().toISOString() }
         ]
       }
       const res = await chai.request(server)
@@ -26,6 +39,8 @@ describe('API', function () {
       res.body.should.have.property('id')
       res.body.should.have.property('timestamp')
       res.body.should.have.property('pollutants')
+      const response = await chai.request(server)
+      .get('/sensors')
     })
 
     it('returns an error when pollutant data is missing', async function () {
@@ -39,13 +54,12 @@ describe('API', function () {
 
     it('handles invalid pollutant data', async function () {
       const postData = {
-        "id": 1004,
-        "timestamp": "2023-06-25T19:15:11.875Z",
+        "timestamp": new Date().toISOString(),
         "pollutants": [
-          { "name": "groundLevelOzone", "value": 0.605, "timestamp": "2023-06-23T20:21:39.960Z" },
-          { "name": "carbonMonoxide", "value": 50, "timestamp": "2023-06-23T20:22:39.960Z" },
-          { "name": "sulfurDioxide", "value": 1000, "timestamp": "2023-06-23T20:23:39.960Z" },
-          { "name": "nitrogenDioxide", "value": 2050, "timestamp": "2023-06-23T20:24:39.960Z" }
+          { "name": "groundLevelOzone", "value": 0.605, "timestamp": new Date().toISOString() },
+          { "name": "carbonMonoxide", "value": 50, "timestamp": new Date().toISOString() },
+          { "name": "sulfurDioxide", "value": 1000, "timestamp": new Date().toISOString() },
+          { "name": "nitrogenDioxide", "value": 2050, "timestamp": new Date().toISOString() }
         ]
       }
       const res = await chai.request(server)
@@ -60,12 +74,12 @@ describe('API', function () {
 
     it('gets sensor data by sensor id', function (done) {
       const postData = {
-        "timestamp": "2023-06-25T19:15:11.875Z",
+        "timestamp": new Date().toISOString(),
         "pollutants": [
-          { "name": "groundLevelOzone", "value": 0.5, "timestamp": "2023-06-23T20:21:39.960Z" },
-          { "name": "carbonMonoxide", "value": 50, "timestamp": "2023-06-23T20:22:39.960Z" },
-          { "name": "sulfurDioxide", "value": 1000, "timestamp": "2023-06-23T20:23:39.960Z" },
-          { "name": "nitrogenDioxide", "value": 2049, "timestamp": "2023-06-23T20:24:39.960Z" }
+          { "name": "groundLevelOzone", "value": 0.5, "timestamp": new Date().toISOString() },
+          { "name": "carbonMonoxide", "value": 50, "timestamp": new Date().toISOString() },
+          { "name": "sulfurDioxide", "value": 1000, "timestamp": new Date().toISOString() },
+          { "name": "nitrogenDioxide", "value": 2049, "timestamp": new Date().toISOString() }
         ]
       }
       chai.request(server)
@@ -86,30 +100,72 @@ describe('API', function () {
       done()
     })
 
-    it('gets all sensor data', async function () {
+    it('gets all sensor data', function (done) {
       const postData = {
-        "timestamp": "2023-06-25T19:15:11.875Z",
+        "timestamp": new Date().toISOString(),
         "pollutants": [
-          { "name": "groundLevelOzone", "value": 0.5, "timestamp": "2023-06-23T20:21:39.960Z" },
-          { "name": "carbonMonoxide", "value": 50, "timestamp": "2023-06-23T20:22:39.960Z" },
-          { "name": "sulfurDioxide", "value": 1000, "timestamp": "2023-06-23T20:23:39.960Z" },
-          { "name": "nitrogenDioxide", "value": 2049, "timestamp": "2023-06-23T20:24:39.960Z" }
+          { "name": "groundLevelOzone", "value": 0.5, "timestamp": new Date().toISOString() },
+          { "name": "carbonMonoxide", "value": 50, "timestamp": new Date().toISOString() },
+          { "name": "sulfurDioxide", "value": 1000, "timestamp": new Date().toISOString() },
+          { "name": "nitrogenDioxide", "value": 2049, "timestamp": new Date().toISOString() }
         ]
       }
-        await chai.request(server)
+      chai.request(server)
         .post('/sensors')
         .set('content-type', 'application/json')
         .send(postData)
-        .then( response => {
-           chai.request(server)
+        .then(response => {
+          chai.request(server)
             .get(`/sensors`)
             .end((err, res) => {
               res.statusCode.should.equal(200)
               res.body.should.have.property('min')
               res.body.should.have.property('max')
               res.body.should.have.property('averages')
+              done()
             })
+
         })
+    })
+
+    describe('# Stats', function () {
+      beforeEach(() => {
+        timekeeper.freeze(time)
+      })
+      afterEach(() => {
+        timekeeper.reset()
+      })
+
+      it('gets average sensor data', async function () {
+        const postData = {
+          "timestamp": new Date().toISOString(),
+          "pollutants": [
+            { "name": "groundLevelOzone", "value": 0.5, "timestamp": new Date().toISOString() },
+            { "name": "carbonMonoxide", "value": 50, "timestamp": new Date().toISOString() },
+            { "name": "sulfurDioxide", "value": 1000, "timestamp": new Date().toISOString() },
+            { "name": "nitrogenDioxide", "value": 2049, "timestamp": new Date().toISOString() },
+            { "name": "groundLevelOzone", "value": 0.6, "timestamp": new Date().toISOString() },
+            { "name": "carbonMonoxide", "value": 45, "timestamp": new Date().toISOString() },
+            { "name": "sulfurDioxide", "value": 950, "timestamp": new Date().toISOString() },
+            { "name": "nitrogenDioxide", "value": 1234, "timestamp": new Date().toISOString() }
+          ]
+        }
+
+        let data = await chai.request(server)
+          .post('/sensors')
+          .set('content-type', 'application/json')
+          .send(postData)
+
+        let res = await chai.request(server)
+          .get(`/sensors`)
+        res.statusCode.should.equal(200)
+        res.body.averages.should.deep.equal({
+          groundLevelOzone: '0.55',
+          carbonMonoxide: '47.50',
+          sulfurDioxide: '975.00',
+          nitrogenDioxide: '1641.50'
+        })
+      })
     })
   })
 })
