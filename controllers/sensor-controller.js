@@ -1,6 +1,6 @@
 const uuid = require('uuid');
 const { save, cache } = require('../persistenceHandler/mockDB');
-const updateAndValidateRequest = require('../validate').updateAndValidateRequest
+const updateAndValidateRequest = require('../helpers/validate').updateAndValidateRequest
 const { getAverages , getMinMax } = require('../helpers/utils')
 
 exports.create = async (req) => {
@@ -47,10 +47,13 @@ function getSensorDataStats(arr) {
   min = Math.min(...pollutants[0].map(item => item.value));
   max = Math.max(...pollutants[0].map(item => item.value));
 
-  return {
-    min: getMinMax(pollutants[0], min),
-    max: getMinMax(pollutants[0], max),
-    averages: getAverages(pollutants[0])
-  }
-}
+  let stats = {}
+  stats.min = getMinMax(pollutants[0], min)
+  stats.max =  getMinMax(pollutants[0], max),
+  stats.averages =  getAverages(pollutants[0])
+  
+  if(Object.hasOwn(stats.min, 'error')) delete stats.min.error
+  if(Object.hasOwn(stats.max, 'error')) delete stats.max.error
 
+  return stats
+}

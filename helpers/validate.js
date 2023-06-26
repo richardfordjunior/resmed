@@ -24,9 +24,10 @@ exports.updateAndValidateRequest = (requestObject) => {
   requestObject.pollutants.map(pollutant => {
     for (const key in pollutantConstraints) {
       if (key === pollutant.name) {
-        if ((pollutant.value > pollutantConstraints[key].max) ||
-          (pollutant.value < 0)) {
-          pollutant.value = { error: 'invalid measurement', originalValue: pollutant.value }
+        if ((+pollutant.value > pollutantConstraints[key].max) ||
+          (+pollutant.value < 0)) {
+          pollutant.error = { exception: 'invalid measurement', originalValue: pollutant.value }
+          pollutant.value = 0
         }
       }
     }

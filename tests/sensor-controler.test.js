@@ -67,8 +67,8 @@ describe('API', function () {
         .set('content-type', 'application/json')
         .send(postData)
       res.statusCode.should.equal(201)
-      res.body.pollutants[0].value.should.deep.equal({ "error": "invalid measurement", "originalValue": 0.605 })
-      res.body.pollutants[3].value.should.deep.equal({ "error": "invalid measurement", "originalValue": 2050 })
+      res.body.pollutants[0].error.should.deep.equal({ "exception": "invalid measurement", "originalValue": 0.605 })
+      res.body.pollutants[3].error.should.deep.equal({ "exception": "invalid measurement", "originalValue": 2050 })
     })
 
 
